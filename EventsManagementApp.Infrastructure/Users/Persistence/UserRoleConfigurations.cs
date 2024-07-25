@@ -1,9 +1,8 @@
-﻿using EventManagementApp.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EventsManagementApp.Infrastructure.Roles.Persistence;
+namespace EventsManagementApp.Infrastructure.Users.Persistence;
 
 public class UserRoleConfigurations : IEntityTypeConfiguration<IdentityUserRole<Guid>>
 {
@@ -18,5 +17,7 @@ public class UserRoleConfigurations : IEntityTypeConfiguration<IdentityUserRole<
                 RoleId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
             }
         );
+        
+        builder.ToTable("UserRoles");
     }
 }

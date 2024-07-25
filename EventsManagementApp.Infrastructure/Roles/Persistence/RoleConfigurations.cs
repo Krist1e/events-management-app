@@ -9,7 +9,13 @@ public class RoleConfigurations : IEntityTypeConfiguration<Role>
     public void Configure(EntityTypeBuilder<Role> builder)
     {
         builder.HasKey(r => r.Id);
+        ConfigureData(builder);
+        
+        builder.ToTable("Roles");
+    }
 
+    private static void ConfigureData(EntityTypeBuilder<Role> builder)
+    {
         builder.HasData(
             new Role
             {

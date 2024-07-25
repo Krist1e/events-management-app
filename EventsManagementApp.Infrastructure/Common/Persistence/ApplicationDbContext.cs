@@ -16,15 +16,10 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<User>(u => u.ToTable("Users"));
         modelBuilder.Entity<IdentityUserClaim<Guid>>(uc => uc.ToTable("UserClaims"));
         modelBuilder.Entity<IdentityUserLogin<Guid>>(ul => ul.ToTable("UserLogins"));
         modelBuilder.Entity<IdentityUserToken<Guid>>(ut => ut.ToTable("UserTokens"));
-        
-        modelBuilder.Entity<Role>(r => r.ToTable("Roles"));
         modelBuilder.Entity<IdentityRoleClaim<Guid>>(rc => rc.ToTable("RoleClaims"));
-        
-        modelBuilder.Entity<IdentityUserRole<Guid>>(ur => ur.ToTable("UserRoles"));
         
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }

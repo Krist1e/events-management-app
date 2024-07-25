@@ -1,8 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using EventManagementApp.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,18 +13,9 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
         ConfigureIndexes(builder);
         ConfigureProperties(builder);
-
-        builder.HasData(
-            new User
-            {
-                Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                FirstName = "John",
-                LastName = "Doe",
-                DateOfBirth = new DateOnly(1990, 1, 1),
-                PasswordHash = Encoding.UTF8.GetString(SHA256.HashData("Asteria347@"u8.ToArray())),
-                Email = "asteria@gmail.com"
-            }
-        );
+        ConfigureData(builder);
+        
+        builder.ToTable("Users");
     }
 
     private static void ConfigureIndexes(EntityTypeBuilder<User> builder)
@@ -50,7 +39,6 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.DateOfBirth)
             .IsRequired()
             .HasColumnType("Date")
-            .HasDefaultValueSql("NOW()")
             .HasComment("User's date of birth");
 
         builder.Property(u => u.Email)
@@ -62,5 +50,20 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(256)
             .HasComment("User's hashed password");
+    }
+    
+    private static void ConfigureData(EntityTypeBuilder<User> builder)
+    {
+        builder.HasData(
+            new User
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = new DateOnly(1990, 1, 1),
+                PasswordHash = Encoding.UTF8.GetString(SHA256.HashData("Asteria347@"u8.ToArray())),
+                Email = "asteria@gmail.com"
+            }
+        );
     }
 }
