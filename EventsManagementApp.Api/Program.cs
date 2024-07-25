@@ -1,4 +1,5 @@
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Common.Constants;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Authentication.BearerToken;
@@ -58,6 +59,12 @@ builder.Services.AddApiVersioning();
 
 builder.Services.AddScoped<IOptionsMonitor<BearerTokenOptions>, OptionsMonitor<BearerTokenOptions>>();
 builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>();
+
+// mediatr with EventsManagementApp.Application assembly
+builder.Services.AddMediatR(options =>
+{
+    options.RegisterServicesFromAssemblyContaining<CreateEventCommandHandler>();
+});
 
 #endregion
 

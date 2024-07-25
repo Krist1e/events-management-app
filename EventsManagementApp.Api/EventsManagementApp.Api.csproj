@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+        <PackageReference Include="MediatR" Version="12.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
           <PrivateAssets>all</PrivateAssets>
@@ -27,8 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EventManagementApp.Contracts\EventManagementApp.Contracts.csproj" />
       <ProjectReference Include="..\EventManagementApp.Domain\EventManagementApp.Domain.csproj" />
+      <ProjectReference Include="..\EventsManagementApp.Application\EventsManagementApp.Application.csproj" />
       <ProjectReference Include="..\EventsManagementApp.Infrastructure\EventsManagementApp.Infrastructure.csproj" />
     </ItemGroup>
 

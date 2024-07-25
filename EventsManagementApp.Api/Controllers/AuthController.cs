@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
-using EventManagementApp.Contracts.Users;
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.UseCases.Users.Contracts;
 using EventsManagementApp.Common.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using RegisterRequest = EventsManagementApp.Application.UseCases.Users.Contracts.RegisterRequest;
 
 namespace EventsManagementApp.Controllers;
 
@@ -38,7 +39,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserRequest registration)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest registration)
     {
         var emailStore = (IUserEmailStore<User>)_userStore;
         var email = registration.Email;

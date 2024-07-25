@@ -1,7 +1,6 @@
-﻿namespace EventManagementApp.Contracts.Users;
+﻿namespace EventsManagementApp.Application.UseCases.Users.Contracts;
 
-public record UserRequest(
-    long Id,
+public record RegisterRequest(
     string Email,
     string Password,
     string FirstName,

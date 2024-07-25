@@ -1,4 +1,4 @@
-﻿namespace EventManagementApp.Contracts.Users;
+﻿namespace EventsManagementApp.Application.UseCases.Users.Contracts;
 
 public record UserResponse(
     long Id,
