@@ -1,7 +1,11 @@
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Common.Constants;
 using EventsManagementApp.Infrastructure.Common.Persistence;
+using EventsManagementApp.Infrastructure.Events.Persistence;
+using EventsManagementApp.Infrastructure.Images.Persistence;
+using EventsManagementApp.Infrastructure.Users.Persistence;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -57,8 +61,24 @@ builder.Services.AddApiVersioning();
 
 #region Services Configuration
 
+builder.Services.AddScoped<IUnitOfWork, ApplicationDbContext>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
 builder.Services.AddScoped<IOptionsMonitor<BearerTokenOptions>, OptionsMonitor<BearerTokenOptions>>();
-builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>();
+builder.Services.AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid>>(serviceProvider =>
+{
+    var roleStore = serviceProvider.GetRequiredService<RoleStore<Role, ApplicationDbContext, Guid>>();
+    roleStore.AutoSaveChanges = false;
+    return roleStore;
+});
+builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>(serviceProvider =>
+{
+    var userStore = serviceProvider.GetRequiredService<UserStore<User, Role, ApplicationDbContext, Guid>>();
+    userStore.AutoSaveChanges = false;
+    return userStore;
+});
 
 // mediatr with EventsManagementApp.Application assembly
 builder.Services.AddMediatR(options =>

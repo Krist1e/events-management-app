@@ -9,4 +9,5 @@ public class User : IdentityUser<Guid>
     public DateOnly DateOfBirth { get; set; } 
     
     public ICollection<UserEvent> UserEvents { get; set; }
+    public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; }
 }

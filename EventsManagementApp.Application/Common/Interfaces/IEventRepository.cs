@@ -7,9 +7,9 @@ public interface IEventRepository
 {
     Task<Event?> GetByIdAsync(Guid eventId, CancellationToken cancellationToken);
     Task<IEnumerable<Event>> GetAllAsync(CancellationToken cancellationToken);
-    Task CreateAsync(Event eventEntity, CancellationToken cancellationToken);
-    Task UpdateAsync(Event eventEntity, CancellationToken cancellationToken);
-    Task DeleteAsync(Event eventEntity, CancellationToken cancellationToken);
+    Task CreateAsync(Event @event, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(Event @event, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(Event @event, CancellationToken cancellationToken);
     
     Task<Event?> GetEventByNameAsync(string eventName, CancellationToken cancellationToken);
     Task<IEnumerable<Event>> GetEventsByDateAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
