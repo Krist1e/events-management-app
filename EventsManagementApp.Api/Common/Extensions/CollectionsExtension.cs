@@ -1,7 +1,6 @@
 ﻿using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace EventsManagementApp.Common.Extensions;
 

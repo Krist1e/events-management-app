@@ -14,6 +14,10 @@ public class EventConfigurations : IEntityTypeConfiguration<Event>
         ConfigureIndexes(builder);
         ConfigureProperties(builder);
         
+        builder.HasMany(e => e.Images)
+            .WithOne(i => i.Event)
+            .HasForeignKey(i => i.EventId);
+        
         builder.ToTable("Events");
     }
 

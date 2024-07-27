@@ -5,6 +5,8 @@ using EventsManagementApp.Common.Constants;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using EventsManagementApp.Infrastructure.Events.Persistence;
 using EventsManagementApp.Infrastructure.Images.Persistence;
+using EventsManagementApp.Infrastructure.Images.Storage;
+using EventsManagementApp.Infrastructure.Roles.Persistence;
 using EventsManagementApp.Infrastructure.Users.Persistence;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
@@ -61,11 +63,6 @@ builder.Services.AddApiVersioning();
 
 #region Services Configuration
 
-builder.Services.AddScoped<IUnitOfWork, ApplicationDbContext>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IImageRepository, ImageRepository>();
-
 builder.Services.AddScoped<IOptionsMonitor<BearerTokenOptions>, OptionsMonitor<BearerTokenOptions>>();
 builder.Services.AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid>>(serviceProvider =>
 {
@@ -79,6 +76,13 @@ builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDb
     userStore.AutoSaveChanges = false;
     return userStore;
 });
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // mediatr with EventsManagementApp.Application assembly
 builder.Services.AddMediatR(options =>

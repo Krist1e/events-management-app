@@ -11,6 +11,7 @@ public interface IImageRepository
     Task<bool> DeleteAsync(Image image, CancellationToken cancellationToken);
     
     Task<IEnumerable<Image>> GetImagesByEventIdAsync(Guid eventId, CancellationToken cancellationToken);
-    Task<bool> AddImageToEventAsync(EventImage eventImage, CancellationToken cancellationToken);
-    Task<bool> RemoveImageFromEventAsync(EventImage eventImage, CancellationToken cancellationToken);
+    Task<bool> AddImageToEventAsync(Guid eventId, Image image, CancellationToken cancellationToken);
+    Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images, CancellationToken cancellationToken);
+    Task<bool> RemoveImageFromEventAsync(Guid eventId, Guid imageId, CancellationToken cancellationToken);
 }

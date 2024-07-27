@@ -29,16 +29,9 @@ public class EventsController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize]
     public async Task<ActionResult<EventResponse>> CreateEvent([FromBody] EventRequest request, CancellationToken cancellationToken)
     {
         var eventResponse = await _mediator.Send(new CreateEventCommand(request), cancellationToken);
-        
-        if (eventResponse == null)
-        {
-            return BadRequest();
-        }
-        
         return Ok(eventResponse);
     }
     

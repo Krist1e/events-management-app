@@ -55,32 +55,42 @@ public class ImageRepository : IImageRepository
 
     public async Task<IEnumerable<Image>> GetImagesByEventIdAsync(Guid eventId, CancellationToken cancellationToken)
     {
-        var images = await _dbContext.Images.Where(i => i.EventImages.Any(ei => ei.EventId == eventId))
-            .ToListAsync(cancellationToken);
+        var images = await _dbContext.Images.Where(i => i.EventId == eventId).ToListAsync(cancellationToken);
         return images;
     }
 
-    public async Task<bool> AddImageToEventAsync(EventImage eventImage, CancellationToken cancellationToken)
+    public async Task<bool> AddImageToEventAsync(Guid eventId, Image image, CancellationToken cancellationToken)
     {
-        var existingEventImage = await _dbContext.EventImages.FirstOrDefaultAsync(ei =>
-            ei.EventId == eventImage.EventId && ei.ImageId == eventImage.ImageId, cancellationToken);
-
-        if (existingEventImage is null)
+        var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
+        var existingImage = await _dbContext.Images.FirstOrDefaultAsync(i => i.Id == image.Id, cancellationToken);
+        
+        if (existingEvent is null || existingImage is null)
             return false;
-
-        await _dbContext.EventImages.AddAsync(eventImage, cancellationToken);
+        
+        existingEvent.Images.Add(existingImage);
+        return true;
+    }
+    
+    public async Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images, CancellationToken cancellationToken)
+    {
+        var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
+        
+        if (existingEvent is null)
+            return false;
+        
+        existingEvent.Images.AddRange(images);
         return true;
     }
 
-    public async Task<bool> RemoveImageFromEventAsync(EventImage eventImage, CancellationToken cancellationToken)
+    public async Task<bool> RemoveImageFromEventAsync(Guid eventId, Guid imageId, CancellationToken cancellationToken)
     {
-        var existingEventImage = await _dbContext.EventImages.FirstOrDefaultAsync(ei =>
-            ei.EventId == eventImage.EventId && ei.ImageId == eventImage.ImageId, cancellationToken);
-
-        if (existingEventImage is null)
+        var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
+        var existingImage = await _dbContext.Images.FirstOrDefaultAsync(i => i.Id == imageId, cancellationToken);
+        
+        if (existingEvent is null || existingImage is null)
             return false;
-
-        _dbContext.EventImages.Remove(eventImage);
+        
+        existingEvent.Images.Remove(existingImage);
         return true;
     }
 }

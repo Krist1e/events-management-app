@@ -3,7 +3,6 @@ using Asp.Versioning;
 using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Application.UseCases.Users.Contracts;
 using EventsManagementApp.Common.Constants;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

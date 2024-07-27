@@ -9,5 +9,6 @@ public record EventResponse(
     string Location,
     string Category,
     int Capacity,
-    string[] ImageUrls
+    List<string> ImageUrls,
+    string UserId
 );

@@ -1,4 +1,6 @@
-﻿namespace EventsManagementApp.Application.UseCases.Events.Contracts;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace EventsManagementApp.Application.UseCases.Events.Contracts;
 
 public record EventRequest(
     string Name,
@@ -8,4 +10,6 @@ public record EventRequest(
     string Location,
     string Category,
     int Capacity,
-    string[] ImageUrls);
+    IFormFileCollection ImageFiles,
+    string UserId
+    );
