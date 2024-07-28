@@ -2,8 +2,8 @@
 
 public enum CategoryEnum
 {
+    Other,
     Conference,
     Meetup,
-    Party,
-    Other
+    Party
 }

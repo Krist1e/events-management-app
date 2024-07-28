@@ -19,6 +19,10 @@ public class ImageConfigurations : IEntityTypeConfiguration<Image>
             .IsRequired()
             .HasMaxLength(100)
             .HasComment("Image's storage name");
+
+        builder.Property(i => i.EventId)
+            .IsRequired(false)
+            .HasComment("Event's ID");
         
         builder.HasIndex(i => new { i.ImageUrl, i.ImageStorageName });
     }

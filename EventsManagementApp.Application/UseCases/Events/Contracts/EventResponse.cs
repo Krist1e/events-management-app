@@ -8,7 +8,5 @@ public record EventResponse(
     DateTime EndDate,
     string Location,
     string Category,
-    int Capacity,
-    List<string> ImageUrls,
-    string UserId
+    int Capacity
 );

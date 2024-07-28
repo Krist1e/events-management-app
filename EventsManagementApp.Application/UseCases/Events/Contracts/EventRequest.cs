@@ -9,7 +9,5 @@ public record EventRequest(
     DateTime EndDate,
     string Location,
     string Category,
-    int Capacity,
-    IFormFileCollection ImageFiles,
-    string UserId
-    );
+    int Capacity
+);

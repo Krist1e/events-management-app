@@ -50,7 +50,6 @@ public class EventConfigurations : IEntityTypeConfiguration<Event>
         builder.Property(e => e.Category)
             .IsRequired()
             .HasConversion<string>()
-            .HasSentinel(-1)
             .HasDefaultValue(CategoryEnum.Other)
             .HasComment("Event's category");
         

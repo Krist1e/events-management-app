@@ -9,26 +9,16 @@ namespace EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, EventResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IImageService _imageService;
-    private readonly IUserRepository _userRepository;
+    private readonly IEventRepository _eventRepository;
 
-    public CreateEventCommandHandler(IUnitOfWork unitOfWork, IImageService imageService, IUserRepository userRepository)
+    public CreateEventCommandHandler(IUnitOfWork unitOfWork, IEventRepository eventRepository)
     {
         _unitOfWork = unitOfWork;
-        _imageService = imageService;
-        _userRepository = userRepository;
+        _eventRepository = eventRepository;
     }
 
     public async Task<EventResponse> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
-        var images = new List<Image>();
-
-        foreach (var imageFile in request.Event.ImageFiles)
-        {
-            var image = await _imageService.UploadImageAsync(imageFile);
-            images.Add(image);
-        }
-        
         var newEvent = new Event
         {
             Name = request.Event.Name,
@@ -37,33 +27,22 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Eve
             EndDate = request.Event.EndDate,
             Location = request.Event.Location,
             Category = Enum.Parse<CategoryEnum>(request.Event.Category),
-            Capacity = request.Event.Capacity,
-            Images = images
+            Capacity = request.Event.Capacity
         };
-        
-        var userEvent = new UserEvent
-        {
-            UserId = Guid.Parse(request.Event.UserId),
-            Event = newEvent,
-            IsOrganizer = true,
-            RegistrationDate = DateTime.UtcNow
-        };
-        
-        await _userRepository.AddUserToEventAsync(userEvent, cancellationToken);
+
+        var eventId = await _eventRepository.CreateAsync(newEvent, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
-        
+
         return new EventResponse
         (
-            newEvent.Id,
+            eventId,
             newEvent.Name,
             newEvent.Description,
             newEvent.StartDate,
             newEvent.EndDate,
             newEvent.Location,
             newEvent.Category.ToString(),
-            newEvent.Capacity,
-            newEvent.Images.Select(i => i.ImageUrl).ToList(),
-            userEvent.UserId.ToString()
+            newEvent.Capacity
         );
     }
 }

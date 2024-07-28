@@ -64,18 +64,8 @@ builder.Services.AddApiVersioning();
 #region Services Configuration
 
 builder.Services.AddScoped<IOptionsMonitor<BearerTokenOptions>, OptionsMonitor<BearerTokenOptions>>();
-builder.Services.AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid>>(serviceProvider =>
-{
-    var roleStore = serviceProvider.GetRequiredService<RoleStore<Role, ApplicationDbContext, Guid>>();
-    roleStore.AutoSaveChanges = false;
-    return roleStore;
-});
-builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>(serviceProvider =>
-{
-    var userStore = serviceProvider.GetRequiredService<UserStore<User, Role, ApplicationDbContext, Guid>>();
-    userStore.AutoSaveChanges = false;
-    return userStore;
-});
+builder.Services.AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid>>();
+builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();

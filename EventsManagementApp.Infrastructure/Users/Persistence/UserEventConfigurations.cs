@@ -38,10 +38,5 @@ public class UserEventConfigurations : IEntityTypeConfiguration<UserEvent>
             .HasColumnType("TIMESTAMPTZ")
             .HasDefaultValueSql("NOW()")
             .HasComment("Registration date");
-        
-        builder.Property(ue => ue.IsOrganizer)
-            .IsRequired()
-            .HasDefaultValue(false)
-            .HasComment("User's role in the event");
     }
 }

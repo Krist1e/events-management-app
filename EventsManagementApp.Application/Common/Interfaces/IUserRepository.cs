@@ -13,6 +13,6 @@ public interface IUserRepository
     Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
     Task<IEnumerable<User>> GetUsersByEventIdAsync(Guid eventId, CancellationToken cancellationToken);
     
-    Task<bool> AddUserToEventAsync(UserEvent userEvent, CancellationToken cancellationToken);
-    Task<bool> RemoveUserFromEventAsync(UserEvent userEvent, CancellationToken cancellationToken);
+    Task<bool> AddUserToEventAsync(Guid userId, Guid eventId, bool isOrganizer, CancellationToken cancellationToken);
+    Task<bool> RemoveUserFromEventAsync(Guid userId, Guid eventId, CancellationToken cancellationToken);
 }

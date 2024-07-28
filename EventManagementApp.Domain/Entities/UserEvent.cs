@@ -7,7 +7,5 @@ public class UserEvent
     
     public Guid EventId { get; set; }
     public Event Event { get; set; }
-    
-    public bool IsOrganizer { get; set; }
     public DateTime RegistrationDate { get; set; } 
 }

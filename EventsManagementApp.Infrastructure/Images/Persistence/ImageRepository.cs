@@ -26,11 +26,6 @@ public class ImageRepository : IImageRepository
         return images;
     }
 
-    public async Task CreateAsync(Image image, CancellationToken cancellationToken)
-    {
-        await _dbContext.Images.AddAsync(image, cancellationToken);
-    }
-
     public async Task<bool> UpdateAsync(Image image, CancellationToken cancellationToken)
     {
         var existingImage = await GetByIdAsync(image.Id, cancellationToken);
@@ -63,34 +58,37 @@ public class ImageRepository : IImageRepository
     {
         var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
         var existingImage = await _dbContext.Images.FirstOrDefaultAsync(i => i.Id == image.Id, cancellationToken);
-        
+
         if (existingEvent is null || existingImage is null)
             return false;
-        
+
         existingEvent.Images.Add(existingImage);
         return true;
     }
-    
-    public async Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images, CancellationToken cancellationToken)
+
+    public async Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images,
+        CancellationToken cancellationToken)
     {
         var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
-        
+
         if (existingEvent is null)
             return false;
-        
+
         existingEvent.Images.AddRange(images);
         return true;
     }
 
-    public async Task<bool> RemoveImageFromEventAsync(Guid eventId, Guid imageId, CancellationToken cancellationToken)
+    public bool DeleteImages(IEnumerable<Image> images)
     {
-        var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
-        var existingImage = await _dbContext.Images.FirstOrDefaultAsync(i => i.Id == imageId, cancellationToken);
-        
-        if (existingEvent is null || existingImage is null)
-            return false;
-        
-        existingEvent.Images.Remove(existingImage);
+        _dbContext.Images.RemoveRange(images);
         return true;
+    }
+
+    public async Task<IEnumerable<Image>> GetImagesByImageUrlsAsync(Guid eventId, IEnumerable<string> imageUrls,
+        CancellationToken cancellationToken)
+    {
+        var images = await _dbContext.Images.Where(i => i.EventId == eventId && imageUrls.Contains(i.ImageUrl))
+            .ToListAsync(cancellationToken);
+        return images;
     }
 }

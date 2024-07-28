@@ -27,9 +27,10 @@ public class EventRepository : IEventRepository
         return events;
     }
 
-    public async Task CreateAsync(Event @event, CancellationToken cancellationToken)
+    public async Task<Guid> CreateAsync(Event @event, CancellationToken cancellationToken)
     {
-        await _dbContext.Events.AddAsync(@event, cancellationToken);
+        var newEvent = await _dbContext.Events.AddAsync(@event, cancellationToken);
+        return newEvent.Entity.Id;
     }
 
     public async Task<bool> UpdateAsync(Event @event, CancellationToken cancellationToken)
