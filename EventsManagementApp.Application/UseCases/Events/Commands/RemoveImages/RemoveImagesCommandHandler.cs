@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
 
-public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand, bool>
+public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand>
 {
     private readonly IImageRepository _imageRepository;
     private readonly IImageService _imageService;
@@ -20,14 +20,14 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand, b
         _logger = logger;
     }
 
-    public async Task<bool> Handle(RemoveImagesCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveImagesCommand request, CancellationToken cancellationToken)
     {
         var images = await _imageRepository.GetImagesByIdsAsync(request.Images.ImageIds, cancellationToken);
 
         if (images.Count == 0)
         {
             _logger.LogWarning("Images with ids {ImageIds} not found", string.Join(", ", request.Images.ImageIds));
-            return false;
+            throw new ImagesNotFoundException("Images not found");
         }
 
         var tasks = images.Select(i => _imageService.RemoveImageAsync(i.ImageStorageName, cancellationToken));
@@ -38,13 +38,11 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand, b
         if (!result)
         {
             _logger.LogWarning("Failed to remove images with ids {ImageIds}", string.Join(", ", request.Images.ImageIds));
-            return false;
+            throw new RemoveImagesFailedException("Failed to remove images");
         }
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         
         _logger.LogInformation("Images with ids {ImageIds} removed", string.Join(", ", request.Images.ImageIds));
-        
-        return true;
     }
 }

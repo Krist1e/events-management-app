@@ -1,4 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Interfaces;
+﻿using EventsManagementApp.Application.Common.Exceptions;
+using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ public class AddImagesCommandHandler : IRequestHandler<AddImagesCommand, AddImag
 
         if (!result)
         {
-            throw new Exception("Failed to add images to event");
+            throw new AddImagesFailedException("Failed to add images to event");
         }
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);

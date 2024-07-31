@@ -3,4 +3,4 @@ using MediatR;
 
 namespace EventsManagementApp.Application.UseCases.Auth.Register;
 
-public record RegisterCommand(RegisterRequest User) : IRequest<bool>;
+public record RegisterCommand(RegisterRequest User) : IRequest;

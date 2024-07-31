@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
 
-public class RegisterInEventCommandHandler : IRequestHandler<RegisterInEventCommand, bool>
+public class RegisterInEventCommandHandler : IRequestHandler<RegisterInEventCommand>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ public class RegisterInEventCommandHandler : IRequestHandler<RegisterInEventComm
         _logger = logger;
     }
 
-    public async Task<bool> Handle(RegisterInEventCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterInEventCommand request, CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId);
         var eventId = Guid.Parse(request.EventId);
@@ -29,12 +29,11 @@ public class RegisterInEventCommandHandler : IRequestHandler<RegisterInEventComm
         {
             _logger.LogWarning("User with id {UserId} couldn't be registered for event with id {EventId}", userId,
                 eventId);
-            return false;
+            throw new RegisterInEventFailedException(
+                $"Failed to register user with id {userId} for event with id {eventId}");
         }
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         _logger.LogInformation("User with id {UserId} registered for event with id {EventId}", userId, eventId);
-
-        return true;
     }
 }

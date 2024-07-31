@@ -3,4 +3,4 @@ using MediatR;
 
 namespace EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
 
-public record RemoveImagesCommand(RemoveImagesRequest Images, string EventId) : IRequest<bool>;
+public record RemoveImagesCommand(RemoveImagesRequest Images) : IRequest;

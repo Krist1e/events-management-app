@@ -36,11 +36,6 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Cre
 
         var eventId = await _eventRepository.CreateAsync(newEvent, cancellationToken);
 
-        if (eventId == Guid.Empty)
-        {
-            throw new Exception("Failed to create event");
-        }
-
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         _logger.LogInformation("Event with id {EventId} created", eventId);
 

@@ -24,7 +24,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserRes
         if (user is null)
         {
             _logger.LogWarning("User with id {UserId} was not found", userId);
-            throw new NullReferenceException();
+            throw new UserNotFoundException($"User with id {userId} was not found");
         }
 
         return new UserResponse(

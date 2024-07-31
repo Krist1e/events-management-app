@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.Common.Interfaces;
+using EventsManagementApp.Application.UseCases.Events.Commands.UpdateEvent;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -21,10 +22,10 @@ public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Event
         var eventId = Guid.Parse(request.Id);
         var @event = await _eventRepository.GetByIdAsync(eventId, cancellationToken);
 
-        if (@event == null)
+        if (@event is null)
         {
             _logger.LogWarning("Event with id {EventId} not found", eventId);
-            throw new NullReferenceException();
+            throw new EventNotFoundException($"Event with id {eventId} not found");
         }
 
         return new EventResponse

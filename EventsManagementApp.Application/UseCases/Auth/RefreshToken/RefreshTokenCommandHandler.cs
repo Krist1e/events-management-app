@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, C
     private readonly IOptionsMonitor<BearerTokenOptions> _optionsMonitor;
     private readonly TimeProvider _timeProvider = TimeProvider.System;
     private readonly SignInManager<User> _signInManager;
-    private ILogger<RefreshTokenCommandHandler> _logger;
+    private readonly ILogger<RefreshTokenCommandHandler> _logger;
 
     public RefreshTokenCommandHandler(IOptionsMonitor<BearerTokenOptions> optionsMonitor,
         SignInManager<User> signInManager, ILogger<RefreshTokenCommandHandler> logger)

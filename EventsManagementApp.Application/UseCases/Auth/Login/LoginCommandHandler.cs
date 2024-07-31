@@ -1,11 +1,12 @@
 ﻿using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Auth.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, bool>
+public class LoginCommandHandler : IRequestHandler<LoginCommand>
 {
     private readonly SignInManager<User> _signInManager;
     private readonly ILogger<LoginCommandHandler> _logger; 
@@ -16,7 +17,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, bool>
         _logger = logger;
     }
 
-    public async Task<bool> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         _signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
 
@@ -27,10 +28,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, bool>
         if (!result.Succeeded)
         {
             _logger.LogWarning("Failed to log in user with email {email}", request.User.Email);
-            return false;
+            throw new LoginFailedException($"Failed to log in user with email {request.User.Email}");
         }
         
         _logger.LogInformation("User logged in: {email}", request.User.Email);
-        return true;
     }
 }

@@ -31,9 +31,9 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> CreateAsync(User user, string password, CancellationToken cancellationToken)
     {
-        await _userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
+        await _userStore.SetUserNameAsync(user, user.Email, cancellationToken);
         var emailStore = (IUserEmailStore<User>)_userStore;
-        await emailStore.SetEmailAsync(user, user.Email, CancellationToken.None);
+        await emailStore.SetEmailAsync(user, user.Email, cancellationToken);
         
         var result = await _userManager.CreateAsync(user, password);
         return result.Succeeded;

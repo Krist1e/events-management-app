@@ -3,10 +3,13 @@ using EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
+using EventsManagementApp.Application.UseCases.Events.Queries.GetEventById;
+using EventsManagementApp.Application.UseCases.Events.Queries.ListEvents;
+using EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
+using EventsManagementApp.Application.UseCases.Users.Commands.UnregisterFromEvent;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EventsManagementApp.Controllers;
 
@@ -15,26 +18,33 @@ namespace EventsManagementApp.Controllers;
 [Route("api/v{version:apiVersion}/events")]
 public class EventsController : ControllerBase
 {
-    private readonly ILogger<EventsController> _logger;
     private readonly ISender _sender;
 
-    public EventsController(ILogger<EventsController> logger, ISender sender)
+    public EventsController(ISender sender)
     {
-        _logger = logger;
         _sender = sender;
     }
 
     [HttpGet]
-    public IActionResult GetEvents()
+    public async Task<ActionResult<IEnumerable<EventResponse>>> GetEvents(CancellationToken cancellationToken)
     {
-        return Ok("Events");
+        var events = await _sender.Send(new ListEventsQuery(), cancellationToken);
+        return Ok(events);
+    }
+
+    [HttpGet("{eventId}")]
+    public async Task<ActionResult<CreateEventResponse>> GetEventById(string eventId,
+        CancellationToken cancellationToken)
+    {
+        var eventResponse = await _sender.Send(new GetEventByIdQuery(eventId), cancellationToken);
+        return Ok(eventResponse);
     }
 
     [HttpPost]
-    public async Task<ActionResult<EventResponse>> CreateEvent([FromBody] EventRequest eventRequest,
+    public async Task<ActionResult<CreateEventResponse>> CreateEvent([FromBody] CreateEventRequest createEventRequest,
         CancellationToken cancellationToken)
     {
-        var eventResponse = await _sender.Send(new CreateEventCommand(eventRequest), cancellationToken);
+        var eventResponse = await _sender.Send(new CreateEventCommand(createEventRequest), cancellationToken);
         return Ok(eventResponse);
     }
 
@@ -46,11 +56,39 @@ public class EventsController : ControllerBase
         return imageResponse;
     }
 
-    [HttpDelete("{eventId}/images")]
-    public async Task<ActionResult<bool>> RemoveImagesFromEventAsync([FromBody] RemoveImagesRequest request,
-        string eventId, CancellationToken cancellationToken)
+    [HttpDelete("images")]
+    public async Task<IActionResult> RemoveImagesAsync([FromBody] RemoveImagesRequest request, CancellationToken cancellationToken)
     {
-        var result = await _sender.Send(new RemoveImagesCommand(request, eventId), cancellationToken);
-        return result;
+        await _sender.Send(new RemoveImagesCommand(request), cancellationToken);
+        
+        return Ok();
+    }
+
+    [HttpPost("{eventId}/users")]
+    public async Task<IActionResult> RegisterUserToEvent(string eventId, CancellationToken cancellationToken)
+    {
+        var userId = User.Identity?.GetUserId();
+        
+        if (userId is null)
+        {
+            return BadRequest("User not found");
+        }
+        
+        await _sender.Send(new RegisterInEventCommand(userId, eventId), cancellationToken);
+        return Ok();
+    }
+    
+    [HttpDelete("{eventId}/users")]
+    public async Task<IActionResult> UnregisterUserFromEvent(string eventId, CancellationToken cancellationToken)
+    {
+        var userId = User.Identity?.GetUserId();
+        
+        if (userId is null)
+        {
+            return BadRequest("User not found");
+        }
+        
+        await _sender.Send(new UnregisterFromEventCommand(userId, eventId), cancellationToken);
+        return Ok();
     }
 }

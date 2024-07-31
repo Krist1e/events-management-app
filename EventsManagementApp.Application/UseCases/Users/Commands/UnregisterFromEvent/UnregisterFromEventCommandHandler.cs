@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Users.Commands.UnregisterFromEvent;
 
-public class UnregisterFromEventCommandHandler : IRequestHandler<UnregisterFromEventCommand, bool>
+public class UnregisterFromEventCommandHandler : IRequestHandler<UnregisterFromEventCommand>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ public class UnregisterFromEventCommandHandler : IRequestHandler<UnregisterFromE
         _logger = logger;
     }
 
-    public async Task<bool> Handle(UnregisterFromEventCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UnregisterFromEventCommand request, CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId);
         var eventId = Guid.Parse(request.EventId);
@@ -28,12 +28,11 @@ public class UnregisterFromEventCommandHandler : IRequestHandler<UnregisterFromE
         if (!result)
         {
             _logger.LogWarning("User with id {UserId} is not registered for event with id {EventId}", userId, eventId);
-            return false;
+            throw new UnregisterFromEventFailedException(
+                $"Failed to unregister user with id {userId} from event with id {eventId}");
         }
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         _logger.LogInformation("User with id {UserId} unregistered from event with id {EventId}", userId, eventId);
-        
-        return true;
     }
 }

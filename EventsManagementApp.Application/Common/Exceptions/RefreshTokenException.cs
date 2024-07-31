@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Auth.RefreshToken;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class RefreshTokenException : Exception
 {

@@ -1,18 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EventManagementApp.Domain.Entities;
+﻿using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Application.Common.Constants;
+using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Auth.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterCommandHandler> _logger;
-    private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
     public RegisterCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork,
         ILogger<RegisterCommandHandler> logger)
@@ -22,14 +21,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
         _logger = logger;
     }
 
-    public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var email = request.User.Email;
-
-        if (string.IsNullOrEmpty(email) || !EmailAddressAttribute.IsValid(email))
-        {
-            return false;
-        }
 
         var user = new User
         {
@@ -45,14 +39,19 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
         if (!result)
         {
             _logger.LogError("Failed to create user with email {Email}", email);
-            return false;
+            throw new RegisterFailedException("Failed to create user");
         }
 
-        await _userRepository.AddRoleToUserAsync(user.Id, Roles.User, cancellationToken);
+        var roleAdded = await _userRepository.AddRoleToUserAsync(user.Id, Roles.User, cancellationToken);
+        
+        if (!roleAdded)
+        {
+            _logger.LogError("Failed to add role to user with email {Email}", email);
+            throw new RoleAssignmentFailedException("Failed to assign role to user");
+        }
+        
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         
         _logger.LogInformation("User created: {email}", email);
-        
-        return true;
     }
 }

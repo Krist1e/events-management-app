@@ -39,7 +39,7 @@ public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand, Eve
         if (!result)
         {
             _logger.LogWarning("Event with id {EventId} not found", @event.Id);
-            throw new NullReferenceException();
+            throw new EventNotFoundException($"Event with id {@event.Id} not found");
         }
         
         await _unitOfWork.CommitChangesAsync(cancellationToken);
