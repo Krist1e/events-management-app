@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Users.Commands.UnregisterFromEvent;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class UnregisterFromEventFailedException : Exception
 {

@@ -1,5 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Interfaces;
-using EventsManagementApp.Application.UseCases.Events.Commands.UpdateEvent;
+﻿using EventsManagementApp.Application.Common.Exceptions;
+using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
 using Microsoft.Extensions.Logging;

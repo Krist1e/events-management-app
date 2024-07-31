@@ -1,5 +1,6 @@
 ﻿using EventManagementApp.Domain.Entities;
 using EventManagementApp.Domain.Enums;
+using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;

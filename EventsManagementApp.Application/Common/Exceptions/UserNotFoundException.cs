@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Users.Queries.GetUserById;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class UserNotFoundException : Exception
 {

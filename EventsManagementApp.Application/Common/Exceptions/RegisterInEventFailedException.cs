@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class RegisterInEventFailedException : Exception
 {

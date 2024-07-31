@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class RemoveImagesFailedException : Exception
 {

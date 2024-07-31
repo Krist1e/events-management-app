@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Events.Commands.UpdateEvent;
+﻿namespace EventsManagementApp.Application.Common.Exceptions;
 
 public class EventNotFoundException : Exception
 {
