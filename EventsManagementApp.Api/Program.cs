@@ -1,18 +1,18 @@
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.Common.Constants;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
-using EventsManagementApp.Common.Constants;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using EventsManagementApp.Infrastructure.Events.Persistence;
 using EventsManagementApp.Infrastructure.Images.Persistence;
 using EventsManagementApp.Infrastructure.Images.Storage;
-using EventsManagementApp.Infrastructure.Roles.Persistence;
 using EventsManagementApp.Infrastructure.Users.Persistence;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -49,8 +49,35 @@ builder.Services.AddAuthorization(options =>
 
 #region Swagger Configuration
 
-builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Event Management API", Version = "v1.0" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Bearer {token}",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 #endregion
 
@@ -64,17 +91,17 @@ builder.Services.AddApiVersioning();
 #region Services Configuration
 
 builder.Services.AddScoped<IOptionsMonitor<BearerTokenOptions>, OptionsMonitor<BearerTokenOptions>>();
-builder.Services.AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid>>();
-builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid>>();
+builder.Services
+    .AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid, UserRole, IdentityRoleClaim<Guid>>>();
+builder.Services.AddScoped<IUserStore<User>, UserStore<User, Role, ApplicationDbContext, Guid, IdentityUserClaim<Guid>,
+    UserRole, IdentityUserLogin<Guid>, IdentityUserToken<Guid>, IdentityRoleClaim<Guid>>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
-// mediatr with EventsManagementApp.Application assembly
 builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblyContaining<CreateEventCommandHandler>();

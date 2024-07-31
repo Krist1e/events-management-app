@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Common.Constants;
+﻿namespace EventsManagementApp.Application.Common.Constants;
 
 public static class Roles
 {

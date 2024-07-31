@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace EventsManagementApp.Application.UseCases.Events.Contracts;
+﻿namespace EventsManagementApp.Application.UseCases.Events.Contracts;
 
 public record EventRequest(
+    string Id,
     string Name,
     string Description,
     DateTime StartDate,

@@ -9,12 +9,14 @@ namespace EventsManagementApp.Infrastructure.Users.Persistence;
 public class UserRepository : IUserRepository
 {
     private readonly IUserStore<User> _userStore;
+    private readonly UserManager<User> _userManager;
     private readonly ApplicationDbContext _context;
 
-    public UserRepository(IUserStore<User> userStore, ApplicationDbContext context)
+    public UserRepository(IUserStore<User> userStore, ApplicationDbContext context, UserManager<User> userManager)
     {
         _userStore = userStore;
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
@@ -27,9 +29,14 @@ public class UserRepository : IUserRepository
         return await _context.Users.ToListAsync(cancellationToken);
     }
 
-    public async Task CreateAsync(User user, CancellationToken cancellationToken)
+    public async Task<bool> CreateAsync(User user, string password, CancellationToken cancellationToken)
     {
-        await _userStore.CreateAsync(user, cancellationToken);
+        await _userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
+        var emailStore = (IUserEmailStore<User>)_userStore;
+        await emailStore.SetEmailAsync(user, user.Email, CancellationToken.None);
+        
+        var result = await _userManager.CreateAsync(user, password);
+        return result.Succeeded;
     }
 
     public async Task<bool> UpdateAsync(User user, CancellationToken cancellationToken)
@@ -73,8 +80,24 @@ public class UserRepository : IUserRepository
         return users;
     }
 
-    public async Task<bool> AddUserToEventAsync(Guid userId, Guid eventId, bool isOrganizer,
-        CancellationToken cancellationToken)
+    public async Task<bool> AddRoleToUserAsync(Guid userId, string roleName, CancellationToken cancellationToken)
+    {
+        var role = _context.Roles.FirstOrDefault(r => r.Name == roleName);
+        
+        if (role is null)
+            return false;
+        
+        var userRole = new UserRole
+        {
+            UserId = userId,
+            RoleId = role.Id
+        };
+
+        await _context.UserRoles.AddAsync(userRole, cancellationToken);
+        return true;
+    }
+
+    public async Task<bool> AddUserToEventAsync(Guid userId, Guid eventId, CancellationToken cancellationToken)
     {
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         var existingEvent = await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);

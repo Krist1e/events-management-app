@@ -1,6 +1,7 @@
 ﻿using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
 
@@ -9,12 +10,15 @@ public class AddImagesCommandHandler : IRequestHandler<AddImagesCommand, AddImag
     private readonly IImageService _imageService;
     private readonly IImageRepository _imageRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<AddImagesCommandHandler> _logger;
 
-    public AddImagesCommandHandler(IImageService imageService, IImageRepository imageRepository, IUnitOfWork unitOfWork)
+    public AddImagesCommandHandler(IImageService imageService, IImageRepository imageRepository, IUnitOfWork unitOfWork,
+        ILogger<AddImagesCommandHandler> logger)
     {
         _imageService = imageService;
         _imageRepository = imageRepository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<AddImagesResponse> Handle(AddImagesCommand request, CancellationToken cancellationToken)
@@ -23,10 +27,17 @@ public class AddImagesCommandHandler : IRequestHandler<AddImagesCommand, AddImag
         var images = await Task.WhenAll(tasks);
         var eventId = Guid.Parse(request.EventId);
 
-        await _imageRepository.AddImagesToEventAsync(eventId, images, cancellationToken);
-        await _unitOfWork.CommitChangesAsync(cancellationToken);
+        var result = await _imageRepository.AddImagesToEventAsync(eventId, images, cancellationToken);
 
-        var imageUrls = images.Select(i => i.ImageUrl).ToArray();
-        return new AddImagesResponse(imageUrls);
+        if (!result)
+        {
+            throw new Exception("Failed to add images to event");
+        }
+
+        await _unitOfWork.CommitChangesAsync(cancellationToken);
+        _logger.LogInformation("Images added to event with id {EventId}", eventId);
+
+        var imageResponses = images.Select(i => new ImageResponse(i.Id.ToString(), i.ImageUrl));
+        return new AddImagesResponse(imageResponses);
     }
 }

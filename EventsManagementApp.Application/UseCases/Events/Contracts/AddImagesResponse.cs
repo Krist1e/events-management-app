@@ -1,3 +1,3 @@
 ﻿namespace EventsManagementApp.Application.UseCases.Events.Contracts;
 
-public record AddImagesResponse(string[] ImageUrls);
+public record AddImagesResponse(IEnumerable<ImageResponse> Images);

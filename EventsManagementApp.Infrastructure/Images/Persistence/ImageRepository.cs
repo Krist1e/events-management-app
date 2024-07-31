@@ -84,11 +84,10 @@ public class ImageRepository : IImageRepository
         return true;
     }
 
-    public async Task<IEnumerable<Image>> GetImagesByImageUrlsAsync(Guid eventId, IEnumerable<string> imageUrls,
+    public async Task<List<Image>> GetImagesByIdsAsync(IEnumerable<string> ids,
         CancellationToken cancellationToken)
     {
-        var images = await _dbContext.Images.Where(i => i.EventId == eventId && imageUrls.Contains(i.ImageUrl))
-            .ToListAsync(cancellationToken);
+        var images = await _dbContext.Images.Where(i => ids.Contains(i.Id.ToString())).ToListAsync(cancellationToken);
         return images;
     }
 }

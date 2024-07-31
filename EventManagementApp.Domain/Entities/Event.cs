@@ -12,7 +12,7 @@ public class Event
     public string Location { get; set; }
     public CategoryEnum Category { get; set; }
     public int Capacity { get; set; }
-    
+
     public List<Image> Images { get; set; } = [];
-    public ICollection<UserEvent> UserEvents { get; set; } = [];
+    public ICollection<UserEvent> UserEvents { get; set; } 
 }

@@ -1,13 +1,11 @@
 ﻿namespace EventsManagementApp.Application.UseCases.Events.Contracts;
 
-public record EventResponse(
-    string Id,
+public record CreateEventRequest(
     string Name,
     string Description,
     DateTime StartDate,
     DateTime EndDate,
     string Location,
     string Category,
-    int Capacity,
-    IEnumerable<ImageResponse> Images
-    );
+    int Capacity
+);

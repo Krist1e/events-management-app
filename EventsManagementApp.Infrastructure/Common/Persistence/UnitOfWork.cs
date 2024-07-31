@@ -6,8 +6,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context, IEventRepository events, IImageRepository images,
-        IUserRepository users, IRoleRepository roles)
+    public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
     }
