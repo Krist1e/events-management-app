@@ -1,4 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Exceptions;
+﻿using AutoMapper;
+using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Users.Contracts;
 using MediatR;
@@ -10,11 +11,14 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserRes
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<GetUserByIdQueryHandler> _logger;
+    private readonly IMapper _mapper;
 
-    public GetUserByIdQueryHandler(IUserRepository userRepository, ILogger<GetUserByIdQueryHandler> logger)
+    public GetUserByIdQueryHandler(IUserRepository userRepository, ILogger<GetUserByIdQueryHandler> logger,
+        IMapper mapper)
     {
         _userRepository = userRepository;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<UserResponse> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
@@ -28,12 +32,8 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserRes
             throw new UserNotFoundException($"User with id {userId} was not found");
         }
 
-        return new UserResponse(
-            user.Id.ToString(),
-            user.Email!,
-            user.FirstName,
-            user.LastName,
-            user.DateOfBirth
-        );
+        var userResponse = _mapper.Map<UserResponse>(user);
+        
+        return userResponse;
     }
 }

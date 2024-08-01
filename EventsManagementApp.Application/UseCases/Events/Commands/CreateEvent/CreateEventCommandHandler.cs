@@ -1,4 +1,5 @@
-﻿using EventManagementApp.Domain.Entities;
+﻿using AutoMapper;
+using EventManagementApp.Domain.Entities;
 using EventManagementApp.Domain.Enums;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
@@ -12,43 +13,28 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Cre
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEventRepository _eventRepository;
     private readonly ILogger<CreateEventCommandHandler> _logger;
+    private readonly IMapper _mapper;
 
     public CreateEventCommandHandler(IUnitOfWork unitOfWork, IEventRepository eventRepository,
-        ILogger<CreateEventCommandHandler> logger)
+        ILogger<CreateEventCommandHandler> logger, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _eventRepository = eventRepository;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<CreateEventResponse> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
-        var newEvent = new Event
-        {
-            Name = request.CreateEvent.Name,
-            Description = request.CreateEvent.Description,
-            StartDate = request.CreateEvent.StartDate,
-            EndDate = request.CreateEvent.EndDate,
-            Location = request.CreateEvent.Location,
-            Category = Enum.Parse<CategoryEnum>(request.CreateEvent.Category),
-            Capacity = request.CreateEvent.Capacity
-        };
+        var newEvent = _mapper.Map<Event>(request.Event);
 
         var eventId = await _eventRepository.CreateAsync(newEvent, cancellationToken);
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         _logger.LogInformation("Event with id {EventId} created", eventId);
 
-        return new CreateEventResponse
-        (
-            eventId.ToString(),
-            newEvent.Name,
-            newEvent.Description,
-            newEvent.StartDate,
-            newEvent.EndDate,
-            newEvent.Location,
-            newEvent.Category.ToString(),
-            newEvent.Capacity
-        );
+        var eventResponse = _mapper.Map<CreateEventResponse>(newEvent);
+        
+        return eventResponse;
     }
 }

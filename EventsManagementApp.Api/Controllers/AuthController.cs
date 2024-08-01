@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using LoginRequest = EventsManagementApp.Application.UseCases.Users.Contracts.LoginRequest;
 using RegisterRequest = EventsManagementApp.Application.UseCases.Users.Contracts.RegisterRequest;
 
 namespace EventsManagementApp.Controllers;
@@ -35,7 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserRequest login, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody] LoginRequest login, CancellationToken cancellationToken)
     {
         await _sender.Send(new LoginCommand(login), cancellationToken);
 

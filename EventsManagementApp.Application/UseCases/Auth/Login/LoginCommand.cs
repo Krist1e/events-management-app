@@ -3,4 +3,4 @@ using MediatR;
 
 namespace EventsManagementApp.Application.UseCases.Auth.Login;
 
-public record LoginCommand(UserRequest User) : IRequest;
+public record LoginCommand(LoginRequest User) : IRequest;

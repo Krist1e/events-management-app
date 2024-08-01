@@ -3,4 +3,4 @@ using MediatR;
 
 namespace EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 
-public record CreateEventCommand(CreateEventRequest CreateEvent): IRequest<CreateEventResponse>;
+public record CreateEventCommand(CreateEventRequest Event): IRequest<CreateEventResponse>;

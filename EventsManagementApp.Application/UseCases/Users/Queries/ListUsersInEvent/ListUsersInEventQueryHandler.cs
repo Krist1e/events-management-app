@@ -1,4 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Interfaces;
+﻿using AutoMapper;
+using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Users.Contracts;
 using MediatR;
 
@@ -7,10 +8,13 @@ namespace EventsManagementApp.Application.UseCases.Users.Queries.ListUsersInEven
 public class ListUsersInEventQueryHandler : IRequestHandler<ListUsersInEventQuery, IEnumerable<UserResponse>>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public ListUsersInEventQueryHandler(IEventRepository eventRepository, IUserRepository userRepository)
+    public ListUsersInEventQueryHandler(IEventRepository eventRepository, IUserRepository userRepository,
+        IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<UserResponse>> Handle(ListUsersInEventQuery request,
@@ -19,7 +23,8 @@ public class ListUsersInEventQueryHandler : IRequestHandler<ListUsersInEventQuer
         var eventId = Guid.Parse(request.EventId);
         var users = await _userRepository.GetUsersByEventIdAsync(eventId, cancellationToken);
 
-        return users.Select(user =>
-            new UserResponse(user.Id.ToString(), user.Email!, user.FirstName, user.LastName, user.DateOfBirth));
+        var userResponses = _mapper.Map<IEnumerable<UserResponse>>(users);
+        
+        return userResponses;
     }
 }

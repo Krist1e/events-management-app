@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+﻿using System.Collections;
+using Asp.Versioning;
 using EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
@@ -49,18 +50,17 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost("{eventId}/images")]
-    public async Task<ActionResult<AddImagesResponse>> AddImagesToEventAsync([FromForm] AddImagesRequest request,
+    public async Task<ActionResult<IEnumerable<ImageResponse>>> AddImagesToEventAsync([FromForm] IFormFileCollection imageFiles,
         string eventId, CancellationToken cancellationToken)
     {
-        var imageResponse = await _sender.Send(new AddImagesCommand(request, eventId), cancellationToken);
-        return imageResponse;
+        var imageResponse = await _sender.Send(new AddImagesCommand(imageFiles, eventId), cancellationToken);
+        return Ok(imageResponse);
     }
 
     [HttpDelete("images")]
-    public async Task<IActionResult> RemoveImagesAsync([FromBody] RemoveImagesRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> RemoveImagesAsync([FromBody] IEnumerable<string> imageIds, CancellationToken cancellationToken)
     {
-        await _sender.Send(new RemoveImagesCommand(request), cancellationToken);
-        
+        await _sender.Send(new RemoveImagesCommand(imageIds), cancellationToken);
         return Ok();
     }
 

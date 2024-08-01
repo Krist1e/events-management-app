@@ -1,4 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Interfaces;
+﻿using AutoMapper;
+using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
 
@@ -7,10 +8,12 @@ namespace EventsManagementApp.Application.UseCases.Events.Queries.ListEventsByUs
 public class ListEventsByUserIdQueryHandler : IRequestHandler<ListEventsByUserIdQuery, IEnumerable<EventResponse>>
 {
     private readonly IEventRepository _eventRepository;
+    private readonly IMapper _mapper;
 
-    public ListEventsByUserIdQueryHandler(IEventRepository eventRepository)
+    public ListEventsByUserIdQueryHandler(IEventRepository eventRepository, IMapper mapper)
     {
         _eventRepository = eventRepository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<EventResponse>> Handle(ListEventsByUserIdQuery request,
@@ -19,19 +22,7 @@ public class ListEventsByUserIdQueryHandler : IRequestHandler<ListEventsByUserId
         var userId = Guid.Parse(request.UserId);
         var events = await _eventRepository.GetEventsByUserIdAsync(userId, cancellationToken);
 
-        var eventResponses = events.Select(e =>
-            new EventResponse(
-                e.Id.ToString(),
-                e.Name,
-                e.Description,
-                e.StartDate,
-                e.EndDate,
-                e.Location,
-                e.Category.ToString(),
-                e.Capacity,
-                e.Images.Select(i => new ImageResponse(i.Id.ToString(), i.ImageUrl))
-            )
-        );
+        var eventResponses = _mapper.Map<IEnumerable<EventResponse>>(events);
 
         return eventResponses;
     }

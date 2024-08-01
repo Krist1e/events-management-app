@@ -1,6 +1,7 @@
 using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Application.Common.Constants;
 using EventsManagementApp.Application.Common.Interfaces;
+using EventsManagementApp.Application.Common.Mappings;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using EventsManagementApp.Infrastructure.Events.Persistence;
@@ -105,6 +106,8 @@ builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddAutoMapper(typeof(EventProfile).Assembly);
 
 builder.Services.AddMediatR(options =>
 {

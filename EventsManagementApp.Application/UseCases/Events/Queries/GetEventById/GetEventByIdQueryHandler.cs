@@ -1,4 +1,5 @@
-﻿using EventsManagementApp.Application.Common.Exceptions;
+﻿using AutoMapper;
+using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using MediatR;
@@ -10,11 +11,13 @@ public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Event
 {
     private readonly IEventRepository _eventRepository;
     private readonly ILogger<GetEventByIdQueryHandler> _logger;
+    private readonly IMapper _mapper;
 
-    public GetEventByIdQueryHandler(IEventRepository eventRepository, ILogger<GetEventByIdQueryHandler> logger)
+    public GetEventByIdQueryHandler(IEventRepository eventRepository, ILogger<GetEventByIdQueryHandler> logger, IMapper mapper)
     {
         _eventRepository = eventRepository;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<EventResponse> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
@@ -28,9 +31,8 @@ public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Event
             throw new EventNotFoundException($"Event with id {eventId} not found");
         }
 
-        return new EventResponse
-        (@event.Id.ToString(), @event.Name, @event.Description, @event.StartDate, @event.EndDate, @event.Location,
-            @event.Category.ToString(), @event.Capacity,
-            @event.Images.Select(i => new ImageResponse(i.Id.ToString(), i.ImageUrl)));
+        var eventResponse = _mapper.Map<EventResponse>(@event);
+
+        return eventResponse;
     }
 }

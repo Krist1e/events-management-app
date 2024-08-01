@@ -23,11 +23,11 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand>
 
     public async Task Handle(RemoveImagesCommand request, CancellationToken cancellationToken)
     {
-        var images = await _imageRepository.GetImagesByIdsAsync(request.Images.ImageIds, cancellationToken);
+        var images = await _imageRepository.GetImagesByIdsAsync(request.ImageIds, cancellationToken);
 
         if (images.Count == 0)
         {
-            _logger.LogWarning("Images with ids {ImageIds} not found", string.Join(", ", request.Images.ImageIds));
+            _logger.LogWarning("Images with ids {ImageIds} not found", string.Join(", ", request.ImageIds));
             throw new ImagesNotFoundException("Images not found");
         }
 
@@ -38,12 +38,12 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand>
 
         if (!result)
         {
-            _logger.LogWarning("Failed to remove images with ids {ImageIds}", string.Join(", ", request.Images.ImageIds));
+            _logger.LogWarning("Failed to remove images with ids {ImageIds}", string.Join(", ", request.ImageIds));
             throw new RemoveImagesFailedException("Failed to remove images");
         }
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         
-        _logger.LogInformation("Images with ids {ImageIds} removed", string.Join(", ", request.Images.ImageIds));
+        _logger.LogInformation("Images with ids {ImageIds} removed", string.Join(", ", request.ImageIds));
     }
 }

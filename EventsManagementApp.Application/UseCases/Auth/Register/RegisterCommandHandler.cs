@@ -1,4 +1,5 @@
-﻿using EventManagementApp.Domain.Entities;
+﻿using AutoMapper;
+using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Application.Common.Constants;
 using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
@@ -12,27 +13,22 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand>
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterCommandHandler> _logger;
+    private readonly IMapper _mapper;
 
     public RegisterCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork,
-        ILogger<RegisterCommandHandler> logger)
+        ILogger<RegisterCommandHandler> logger, IMapper mapper)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var email = request.User.Email;
 
-        var user = new User
-        {
-            UserName = email,
-            Email = email,
-            FirstName = request.User.FirstName,
-            LastName = request.User.LastName,
-            DateOfBirth = request.User.DateOfBirth
-        };
+        var user = _mapper.Map<User>(request.User);
 
         var result = await _userRepository.CreateAsync(user, request.User.Password, cancellationToken);
 
