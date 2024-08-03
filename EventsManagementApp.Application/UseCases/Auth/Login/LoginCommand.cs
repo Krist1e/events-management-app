@@ -1,4 +1,4 @@
-﻿using EventsManagementApp.Application.UseCases.Users.Contracts;
+﻿using EventsManagementApp.Application.UseCases.Auth.Contracts;
 using MediatR;
 
 namespace EventsManagementApp.Application.UseCases.Auth.Login;

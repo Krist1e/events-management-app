@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EventManagementApp.Domain.Entities;
+using EventsManagementApp.Application.UseCases.Auth.Contracts;
 using EventsManagementApp.Application.UseCases.Users.Contracts;
 
 namespace EventsManagementApp.Application.Common.Mappings;

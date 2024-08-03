@@ -1,4 +1,4 @@
-﻿namespace EventsManagementApp.Application.UseCases.Users.Contracts;
+﻿namespace EventsManagementApp.Application.UseCases.Auth.Contracts;
 
 public record RegisterRequest(
     string Email,

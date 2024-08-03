@@ -1,4 +1,6 @@
-﻿using Asp.Versioning;
+﻿using System.Text.Json;
+using Asp.Versioning;
+using EventsManagementApp.Application.Common.Contracts;
 using EventsManagementApp.Application.UseCases.Events.Contracts;
 using EventsManagementApp.Application.UseCases.Events.Queries.ListEventsByUserId;
 using EventsManagementApp.Application.UseCases.Users.Contracts;
@@ -14,7 +16,7 @@ namespace EventsManagementApp.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly ISender _sender;
-    
+
     public UsersController(ISender sender)
     {
         _sender = sender;
@@ -30,10 +32,17 @@ public class UsersController : ControllerBase
 
     [HttpGet("{userId}/events")]
     public async Task<ActionResult<IEnumerable<EventResponse>>> GetEventsByUserId(string userId,
-        CancellationToken cancellationToken)
+        [FromQuery] QueryParameters queryParameters, CancellationToken cancellationToken)
     {
-        var events = await _sender.Send(new ListEventsByUserIdQuery(userId), cancellationToken);
+        var events = await _sender.Send(
+            new ListEventsByUserIdQuery(userId, queryParameters), cancellationToken);
+        
+        if (events.Metadata is not null)
+        {
+            var metadata = JsonSerializer.Serialize(events.Metadata);
+            Response.Headers.Append("X-Pagination", metadata);
+        }
 
-        return Ok(events);
+        return Ok(events.Items);
     }
 }

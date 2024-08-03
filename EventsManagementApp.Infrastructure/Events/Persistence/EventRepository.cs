@@ -1,6 +1,9 @@
 ﻿using EventManagementApp.Domain.Entities;
 using EventManagementApp.Domain.Enums;
+using EventsManagementApp.Application.Common.Contracts;
 using EventsManagementApp.Application.Common.Interfaces;
+using EventsManagementApp.Application.UseCases.Events.Contracts;
+using EventsManagementApp.Infrastructure.Common.Extensions;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +29,24 @@ public class EventRepository : IEventRepository
     {
         var events = await _dbContext.Events.Include(e => e.Images).ToListAsync(cancellationToken);
         return events;
+    }
+
+    public async Task<PagedResponse<Event>> GetFilteredEventsAsync(EventQueryParameters queryParameters,
+        CancellationToken cancellationToken)
+    {
+        var events = _dbContext.Events.Include(e => e.Images)
+            .Filter(queryParameters)
+            .Search(queryParameters)
+            .Sort(queryParameters.OrderBy);
+        
+        var totalCount = await events.CountAsync(cancellationToken);
+
+        var pagedEvents = await events.Paginate(queryParameters).ToListAsync(cancellationToken);
+        
+        var metadata = new PaginationMetadata(totalCount, queryParameters.PageNumber, queryParameters.PageSize);
+        var pagedResponse = new PagedResponse<Event>(pagedEvents, metadata);
+
+        return pagedResponse;
     }
 
     public async Task<Guid> CreateAsync(Event @event, CancellationToken cancellationToken)
@@ -56,49 +77,19 @@ public class EventRepository : IEventRepository
         return true;
     }
 
-    public async Task<Event?> GetEventByNameAsync(string eventName, CancellationToken cancellationToken)
-    {
-        var @event = await _dbContext.Events.Include(e => e.Images)
-            .FirstOrDefaultAsync(e => e.Name == eventName, cancellationToken);
-        return @event;
-    }
-
-    public async Task<IEnumerable<Event>> GetEventsByDateAsync(DateTime startDate, DateTime endDate,
+    public async Task<PagedResponse<Event>> GetEventsByUserIdAsync(Guid userId, QueryParameters queryParameters,
         CancellationToken cancellationToken)
-    {
-        var events = await _dbContext.Events
-            .Where(e => e.StartDate >= startDate && e.EndDate <= endDate)
-            .Include(e => e.Images)
-            .ToListAsync(cancellationToken);
-        return events;
-    }
-
-    public async Task<IEnumerable<Event>> GetEventsByLocationAsync(string location, CancellationToken cancellationToken)
-    {
-        var events = await _dbContext.Events
-            .Where(e => e.Location == location)
-            .Include(e => e.Images)
-            .ToListAsync(cancellationToken);
-        return events;
-    }
-
-    public async Task<IEnumerable<Event>> GetEventsByCategoryAsync(CategoryEnum category,
-        CancellationToken cancellationToken)
-    {
-        var events = await _dbContext.Events
-            .Where(e => e.Category == category)
-            .Include(e => e.Images)
-            .ToListAsync(cancellationToken);
-        return events;
-    }
-
-    public async Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         var events = await _dbContext.Events
             .Where(e => e.UserEvents.Any(ue => ue.UserId == userId))
             .Include(e => e.Images)
+            .Paginate(queryParameters)
             .ToListAsync(cancellationToken);
+        
+        var totalCount = events.Count;
+        var metadata = new PaginationMetadata(totalCount, queryParameters.PageNumber, queryParameters.PageSize);
+        var pagedResponse = new PagedResponse<Event>(events, metadata);
 
-        return events;
+        return pagedResponse;
     }
 }

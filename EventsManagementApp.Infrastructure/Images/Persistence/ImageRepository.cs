@@ -48,24 +48,6 @@ public class ImageRepository : IImageRepository
         return true;
     }
 
-    public async Task<IEnumerable<Image>> GetImagesByEventIdAsync(Guid eventId, CancellationToken cancellationToken)
-    {
-        var images = await _dbContext.Images.Where(i => i.EventId == eventId).ToListAsync(cancellationToken);
-        return images;
-    }
-
-    public async Task<bool> AddImageToEventAsync(Guid eventId, Image image, CancellationToken cancellationToken)
-    {
-        var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId, cancellationToken);
-        var existingImage = await _dbContext.Images.FirstOrDefaultAsync(i => i.Id == image.Id, cancellationToken);
-
-        if (existingEvent is null || existingImage is null)
-            return false;
-
-        existingEvent.Images.Add(existingImage);
-        return true;
-    }
-
     public async Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images,
         CancellationToken cancellationToken)
     {
