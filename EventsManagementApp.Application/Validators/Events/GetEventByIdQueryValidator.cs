@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Events.Queries.GetEventById;
+using EventsManagementApp.Application.Validators.Common;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Events;

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using EventsManagementApp.Application.Common.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
@@ -32,9 +33,12 @@ public class ExceptionHandler : IExceptionHandler
         
         var response = new ProblemDetails
         {
-            Title = errorCode != HttpStatusCode.InternalServerError ? exception.Message : ServerErrorMessage,
-            Status = (int) errorCode
+            Title = exception.Message /*errorCode != HttpStatusCode.InternalServerError ? exception.Message : ServerErrorMessage*/,
+            Status = (int) errorCode,
+            Detail = JsonSerializer.Serialize((exception as ValidationException)?.Errors)
         };
+        
+        httpContext.Response.StatusCode = (int) errorCode;
 
         await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
         return true;

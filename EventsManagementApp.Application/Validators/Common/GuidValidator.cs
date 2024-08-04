@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace EventsManagementApp.Application.Validators.Events;
+namespace EventsManagementApp.Application.Validators.Common;
 
 public class GuidValidator : AbstractValidator<string>
 {

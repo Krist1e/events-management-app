@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
+using EventsManagementApp.Application.Validators.Common;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Events;

@@ -12,10 +12,10 @@ public class EventProfile : Profile
     {
         CreateMap<EventRequest, Event>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Parse(src.Id)))
-            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => Enum.Parse<CategoryEnum>(src.Category)));
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => Enum.Parse<CategoryEnum>(src.Category, true)));
 
         CreateMap<CreateEventRequest, Event>()
-            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => Enum.Parse<CategoryEnum>(src.Category)));
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => Enum.Parse<CategoryEnum>(src.Category, true)));
 
         CreateMap<Event, EventResponse>()
             .ForCtorParam(nameof(EventResponse.Id), opt => opt.MapFrom(src => src.Id.ToString()))

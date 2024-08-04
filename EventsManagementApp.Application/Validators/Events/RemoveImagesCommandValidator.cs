@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;
+using EventsManagementApp.Application.Validators.Common;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Events;

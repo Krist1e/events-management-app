@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using EventsManagementApp.Application.Common.Contracts;
 using EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
 using EventsManagementApp.Application.UseCases.Events.Commands.RemoveImages;

@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
+using EventsManagementApp.Application.Validators.Common;
 using EventsManagementApp.Application.Validators.Events;
 using FluentValidation;
 
