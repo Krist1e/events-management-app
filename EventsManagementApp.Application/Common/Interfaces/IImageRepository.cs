@@ -10,6 +10,6 @@ public interface IImageRepository
     Task<bool> DeleteAsync(Image image, CancellationToken cancellationToken);
     
     Task<List<Image>> GetImagesByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken);
-    bool DeleteImages(IEnumerable<Image> images);
+    void DeleteImages(IEnumerable<Image> images);
     Task<bool> AddImagesToEventAsync(Guid eventId, IEnumerable<Image> images, CancellationToken cancellationToken);
 }

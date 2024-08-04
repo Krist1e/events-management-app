@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsManagementApp.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsManagementApp.Infrastructure", "EventsManagementApp.Infrastructure\EventsManagementApp.Infrastructure.csproj", "{B0443F55-CF98-4F62-BF03-ACA3276C84B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsManagementApp.Tests", "EventsManagementApp.Tests\EventsManagementApp.Tests.csproj", "{3B1613E4-E64F-4FCA-AC4E-D3CA1FD0AD75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,9 @@ Global
 		{B0443F55-CF98-4F62-BF03-ACA3276C84B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0443F55-CF98-4F62-BF03-ACA3276C84B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0443F55-CF98-4F62-BF03-ACA3276C84B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1613E4-E64F-4FCA-AC4E-D3CA1FD0AD75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1613E4-E64F-4FCA-AC4E-D3CA1FD0AD75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1613E4-E64F-4FCA-AC4E-D3CA1FD0AD75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1613E4-E64F-4FCA-AC4E-D3CA1FD0AD75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -60,10 +60,9 @@ public class ImageRepository : IImageRepository
         return true;
     }
 
-    public bool DeleteImages(IEnumerable<Image> images)
+    public void DeleteImages(IEnumerable<Image> images)
     {
         _dbContext.Images.RemoveRange(images);
-        return true;
     }
 
     public async Task<List<Image>> GetImagesByIdsAsync(IEnumerable<string> ids,

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>EventsManagementApp.Test</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+      <PackageReference Include="Moq" Version="4.20.70" />
+      <PackageReference Include="xunit" Version="2.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EventsManagementApp.Application\EventsManagementApp.Application.csproj" />
+    </ItemGroup>
+
+</Project>

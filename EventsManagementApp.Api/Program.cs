@@ -3,12 +3,14 @@ using EventsManagementApp.Application.Common.Constants;
 using EventsManagementApp.Application.Common.Interfaces;
 using EventsManagementApp.Application.Common.Mappings;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
+using EventsManagementApp.Application.Validators.Events;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using EventsManagementApp.Infrastructure.Events.Persistence;
 using EventsManagementApp.Infrastructure.Images.Persistence;
 using EventsManagementApp.Infrastructure.Images.Storage;
 using EventsManagementApp.Infrastructure.Users.Persistence;
 using EventsManagementApp.Middleware;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -104,6 +106,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
+builder.Services.AddValidatorsFromAssemblyContaining<AddImagesCommandValidator>();
+
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
@@ -113,6 +117,7 @@ builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblyContaining<CreateEventCommandHandler>();
 });
+
 
 #endregion
 

@@ -1,5 +1,6 @@
 ﻿using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,17 +11,21 @@ public class RegisterInEventCommandHandler : IRequestHandler<RegisterInEventComm
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterInEventCommandHandler> _logger;
+    private readonly IValidator<RegisterInEventCommand> _validator;
 
     public RegisterInEventCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork,
-        ILogger<RegisterInEventCommandHandler> logger)
+        ILogger<RegisterInEventCommandHandler> logger, IValidator<RegisterInEventCommand> validator)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _validator = validator;
     }
 
     public async Task Handle(RegisterInEventCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+        
         var userId = Guid.Parse(request.UserId);
         var eventId = Guid.Parse(request.EventId);
 

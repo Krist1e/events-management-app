@@ -1,5 +1,6 @@
 ﻿using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,17 +11,21 @@ public class UnregisterFromEventCommandHandler : IRequestHandler<UnregisterFromE
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UnregisterFromEventCommandHandler> _logger;
+    private readonly IValidator<UnregisterFromEventCommand> _validator;
 
     public UnregisterFromEventCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork,
-        ILogger<UnregisterFromEventCommandHandler> logger)
+        ILogger<UnregisterFromEventCommandHandler> logger, IValidator<UnregisterFromEventCommand> validator)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _validator = validator;
     }
 
     public async Task Handle(UnregisterFromEventCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+        
         var userId = Guid.Parse(request.UserId);
         var eventId = Guid.Parse(request.EventId);
 

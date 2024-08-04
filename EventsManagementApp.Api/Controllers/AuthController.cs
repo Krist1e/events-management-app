@@ -3,14 +3,13 @@ using EventsManagementApp.Application.UseCases.Auth.Login;
 using EventsManagementApp.Application.UseCases.Auth.Logout;
 using EventsManagementApp.Application.UseCases.Auth.RefreshToken;
 using EventsManagementApp.Application.UseCases.Auth.Register;
-using EventsManagementApp.Application.UseCases.Users.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using LoginRequest = EventsManagementApp.Application.UseCases.Users.Contracts.LoginRequest;
-using RegisterRequest = EventsManagementApp.Application.UseCases.Users.Contracts.RegisterRequest;
+using LoginRequest = EventsManagementApp.Application.UseCases.Auth.Contracts.LoginRequest;
+using RegisterRequest = EventsManagementApp.Application.UseCases.Auth.Contracts.RegisterRequest;
 
 namespace EventsManagementApp.Controllers;
 

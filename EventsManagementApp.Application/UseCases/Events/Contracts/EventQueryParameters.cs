@@ -1,5 +1,4 @@
-﻿using EventManagementApp.Domain.Enums;
-using EventsManagementApp.Application.Common.Contracts;
+﻿using EventsManagementApp.Application.Common.Contracts;
 
 namespace EventsManagementApp.Application.UseCases.Events.Contracts;
 

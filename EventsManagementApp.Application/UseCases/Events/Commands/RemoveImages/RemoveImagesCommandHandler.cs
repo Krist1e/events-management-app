@@ -1,5 +1,6 @@
 ﻿using EventsManagementApp.Application.Common.Exceptions;
 using EventsManagementApp.Application.Common.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,18 +12,23 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand>
     private readonly IImageService _imageService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RemoveImagesCommandHandler> _logger;
+    private readonly IValidator<RemoveImagesCommand> _validator;
 
     public RemoveImagesCommandHandler(IImageRepository imageRepository, IUnitOfWork unitOfWork,
-        IImageService imageService, ILogger<RemoveImagesCommandHandler> logger)
+        IImageService imageService, ILogger<RemoveImagesCommandHandler> logger,
+        IValidator<RemoveImagesCommand> validator)
     {
         _imageRepository = imageRepository;
         _unitOfWork = unitOfWork;
         _imageService = imageService;
         _logger = logger;
+        _validator = validator;
     }
 
     public async Task Handle(RemoveImagesCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+        
         var images = await _imageRepository.GetImagesByIdsAsync(request.ImageIds, cancellationToken);
 
         if (images.Count == 0)
@@ -34,16 +40,10 @@ public class RemoveImagesCommandHandler : IRequestHandler<RemoveImagesCommand>
         var tasks = images.Select(i => _imageService.RemoveImageAsync(i.ImageStorageName, cancellationToken));
         await Task.WhenAll(tasks);
 
-        var result = _imageRepository.DeleteImages(images);
-
-        if (!result)
-        {
-            _logger.LogWarning("Failed to remove images with ids {ImageIds}", string.Join(", ", request.ImageIds));
-            throw new RemoveImagesFailedException("Failed to remove images");
-        }
+        _imageRepository.DeleteImages(images);
 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Images with ids {ImageIds} removed", string.Join(", ", request.ImageIds));
     }
 }

@@ -23,11 +23,16 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="UseCases\Events\Notifications\" />
+      <Compile Remove="UseCases\Events\Notifications\EventChangedNotificationHandler.cs" />
+      <Compile Remove="UseCases\Events\Notifications\**" />
     </ItemGroup>
     
     <ItemGroup>
-      <Compile Remove="UseCases\Events\Notifications\EventChangedNotificationHandler.cs" />
+      <EmbeddedResource Remove="UseCases\Events\Notifications\**" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Remove="UseCases\Events\Notifications\**" />
     </ItemGroup>
 
 </Project>
