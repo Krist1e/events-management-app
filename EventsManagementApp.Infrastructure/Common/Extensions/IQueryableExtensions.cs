@@ -55,7 +55,7 @@ public static class IQueryableExtensions
         {
             return query;
         }
-
+        
         var order = orderBy.Split(' ');
         var sortOrder = order.Length > 1 && order[1].Equals("desc", StringComparison.CurrentCultureIgnoreCase)
             ? SortOrder.Descending

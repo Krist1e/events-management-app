@@ -1,7 +1,7 @@
 ﻿using EventsManagementApp.Application.Common.Contracts;
 using FluentValidation;
 
-namespace EventsManagementApp.Application.Validators.Events;
+namespace EventsManagementApp.Application.Validators.Common;
 
 public class QueryParametersValidator : AbstractValidator<QueryParameters>
 {

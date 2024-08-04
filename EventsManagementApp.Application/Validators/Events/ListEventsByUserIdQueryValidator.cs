@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Events.Queries.ListEventsByUserId;
+using EventsManagementApp.Application.Validators.Common;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Events;
@@ -8,8 +9,7 @@ public class ListEventsByUserIdQueryValidator : AbstractValidator<ListEventsByUs
     public ListEventsByUserIdQueryValidator()
     {
         RuleFor(x => x.UserId)
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("UserId format is invalid");
+            .SetValidator(x => new GuidValidator(nameof(x.UserId)));
 
         RuleFor(x => x.QueryParameters)
             .SetValidator(new QueryParametersValidator());

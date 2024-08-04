@@ -8,7 +8,6 @@ public class GetEventByIdQueryValidator : AbstractValidator<GetEventByIdQuery>
     public GetEventByIdQueryValidator()
     {
         RuleFor(x => x.Id)
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("Id format is invalid");
+            .SetValidator(x => new GuidValidator(nameof(x.Id)));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
+using EventsManagementApp.Application.Validators.Events;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Users;
@@ -8,15 +9,9 @@ public class RegisterInEventCommandValidator : AbstractValidator<RegisterInEvent
     public RegisterInEventCommandValidator()
     {
         RuleFor(x => x.EventId)
-            .NotEmpty()
-            .WithMessage("EventId is required")
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("EventId must be a valid GUID.");
+            .SetValidator(x => new GuidValidator(nameof(x.EventId)));
 
         RuleFor(x => x.UserId)
-            .NotEmpty()
-            .WithMessage("UserId is required")
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("UserId must be a valid GUID.");
+            .SetValidator(x => new GuidValidator(nameof(x.UserId)));
     }
 }

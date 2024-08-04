@@ -1,4 +1,6 @@
-﻿using EventsManagementApp.Application.UseCases.Events.Contracts;
+﻿using EventManagementApp.Domain.Enums;
+using EventsManagementApp.Application.UseCases.Events.Contracts;
+using EventsManagementApp.Application.Validators.Common;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Events;
@@ -12,20 +14,20 @@ public class EventQueryParametersValidator : AbstractValidator<EventQueryParamet
     public EventQueryParametersValidator()
     {
         Include(new QueryParametersValidator());
-        
-        // todo: add validation for OrderBy string
 
         RuleFor(x => x.Name)
             .MaximumLength(NameMaxLength)
-            .WithMessage("Name must not exceed 100 characters");
+            .WithMessage($"Name must not exceed {NameMaxLength} characters");
 
         RuleFor(x => x.Location)
             .MaximumLength(LocationMaxLength)
-            .WithMessage("Location must not exceed 100 characters");
+            .WithMessage($"Location must not exceed {LocationMaxLength} characters");
 
         RuleFor(x => x.Category)
             .MaximumLength(CategoryMaxLength)
-            .WithMessage("Category must not exceed 50 characters");
+            .WithMessage($"Category must not exceed {CategoryMaxLength} characters")
+            .Must(x => Enum.TryParse<CategoryEnum>(x, true, out _))
+            .WithMessage("Category must be a valid category");
 
         RuleFor(x => x.StartDate)
             .GreaterThanOrEqualTo(DateTime.Now)
@@ -33,6 +35,6 @@ public class EventQueryParametersValidator : AbstractValidator<EventQueryParamet
 
         RuleFor(x => x.EndDate)
             .GreaterThan(x => x.StartDate)
-            .WithMessage("End date must be greater than StartDate");
+            .WithMessage("End date must be greater than start date");
     }
 }

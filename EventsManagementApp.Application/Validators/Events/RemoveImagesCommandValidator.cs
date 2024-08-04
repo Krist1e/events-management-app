@@ -8,7 +8,6 @@ public class RemoveImagesCommandValidator : AbstractValidator<RemoveImagesComman
     public RemoveImagesCommandValidator()
     {
         RuleForEach(x => x.ImageIds)
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("ImageId must be a valid GUID.");
+            .SetValidator(new GuidValidator("ImageId"));
     }
 }

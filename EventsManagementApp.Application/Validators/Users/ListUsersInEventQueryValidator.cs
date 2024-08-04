@@ -1,4 +1,5 @@
 ﻿using EventsManagementApp.Application.UseCases.Users.Queries.ListUsersInEvent;
+using EventsManagementApp.Application.Validators.Events;
 using FluentValidation;
 
 namespace EventsManagementApp.Application.Validators.Users;
@@ -8,9 +9,6 @@ public class ListUsersInEventQueryValidator : AbstractValidator<ListUsersInEvent
     public ListUsersInEventQueryValidator()
     {
         RuleFor(x => x.EventId)
-            .NotEmpty()
-            .WithMessage("EventId is required")
-            .Must(x => Guid.TryParse(x, out _))
-            .WithMessage("EventId must be a valid GUID.");
+            .SetValidator(x => new GuidValidator(nameof(x.EventId)));
     }
 }
