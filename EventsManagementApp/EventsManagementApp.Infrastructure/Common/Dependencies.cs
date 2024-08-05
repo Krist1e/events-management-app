@@ -1,5 +1,6 @@
 ﻿using EventManagementApp.Domain.Entities;
 using EventsManagementApp.Application.Common.Interfaces;
+using EventsManagementApp.Infrastructure.Common.Extensions;
 using EventsManagementApp.Infrastructure.Common.Persistence;
 using EventsManagementApp.Infrastructure.Events.Persistence;
 using EventsManagementApp.Infrastructure.Images.Persistence;
@@ -23,6 +24,8 @@ public static class Dependencies
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        
+        services.AddMigrations<ApplicationDbContext>();
         
         services
             .AddScoped<IRoleStore<Role>, RoleStore<Role, ApplicationDbContext, Guid, UserRole, IdentityRoleClaim<Guid>>>();

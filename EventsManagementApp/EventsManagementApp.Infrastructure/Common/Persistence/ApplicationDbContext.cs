@@ -10,10 +10,6 @@ public sealed class ApplicationDbContext : IdentityDbContext<User, Role, Guid, I
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        if (Database.GetPendingMigrations().Any())
-        {
-            Database.Migrate();
-        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
