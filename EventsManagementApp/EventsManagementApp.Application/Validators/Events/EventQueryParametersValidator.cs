@@ -27,11 +27,8 @@ public class EventQueryParametersValidator : AbstractValidator<EventQueryParamet
             .MaximumLength(CategoryMaxLength)
             .WithMessage($"Category must not exceed {CategoryMaxLength} characters")
             .Must(x => Enum.TryParse<CategoryEnum>(x, true, out _))
+            .When(x => !string.IsNullOrEmpty(x.Category))
             .WithMessage("Category must be a valid category");
-
-        RuleFor(x => x.StartDate)
-            .GreaterThanOrEqualTo(DateTime.Now)
-            .WithMessage("Start date must be greater than or equal to current date");
 
         RuleFor(x => x.EndDate)
             .GreaterThan(x => x.StartDate)

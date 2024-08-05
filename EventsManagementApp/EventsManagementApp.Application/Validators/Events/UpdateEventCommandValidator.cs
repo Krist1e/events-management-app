@@ -18,9 +18,6 @@ public class UpdateEventCommandValidator : AbstractValidator<UpdateEventCommand>
         RuleFor(x => x.Event.Description)
             .SetValidator(new EventDescriptionValidator());
 
-        RuleFor(x => x.Event.StartDate)
-            .SetValidator(new EventStartDateValidator());
-
         RuleFor(x => x.Event.EndDate)
             .SetValidator(x => new EventEndDateValidator(x.Event.StartDate));
 
