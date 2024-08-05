@@ -33,9 +33,8 @@ public class ExceptionHandler : IExceptionHandler
         
         var response = new ProblemDetails
         {
-            Title = exception.Message /*errorCode != HttpStatusCode.InternalServerError ? exception.Message : ServerErrorMessage*/,
-            Status = (int) errorCode,
-            Detail = JsonSerializer.Serialize((exception as ValidationException)?.Errors)
+            Title = errorCode != HttpStatusCode.InternalServerError ? exception.Message : ServerErrorMessage,
+            Status = (int) errorCode
         };
         
         httpContext.Response.StatusCode = (int) errorCode;

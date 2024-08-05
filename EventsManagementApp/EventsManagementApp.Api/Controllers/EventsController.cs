@@ -92,7 +92,7 @@ public class EventsController : ControllerBase
             return BadRequest("User not found");
         }
 
-        await _sender.Send(new RegisterInEventCommand(userId, eventId), cancellationToken);
+        await _sender.Send(new RegisterInEventCommand(eventId, userId), cancellationToken);
         return Ok();
     }
 
@@ -107,7 +107,7 @@ public class EventsController : ControllerBase
             return BadRequest("User not found");
         }
 
-        await _sender.Send(new UnregisterFromEventCommand(userId, eventId), cancellationToken);
+        await _sender.Send(new UnregisterFromEventCommand(eventId, userId), cancellationToken);
         return Ok();
     }
 }
