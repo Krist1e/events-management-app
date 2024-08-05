@@ -5,11 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagementApp.Infrastructure.Common.Persistence;
 
-public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole,
+public sealed class ApplicationDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole,
     IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+        if (Database.GetPendingMigrations().Any())
+        {
+            Database.Migrate();
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

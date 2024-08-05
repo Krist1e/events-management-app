@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using EventsManagementApp.Application.Common.Constants;
 using EventsManagementApp.Application.Common.Contracts;
 using EventsManagementApp.Application.UseCases.Events.Commands.AddImages;
 using EventsManagementApp.Application.UseCases.Events.Commands.CreateEvent;
@@ -10,6 +11,7 @@ using EventsManagementApp.Application.UseCases.Users.Commands.RegisterInEvent;
 using EventsManagementApp.Application.UseCases.Users.Commands.UnregisterFromEvent;
 using MediatR;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -52,6 +54,7 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<ActionResult<CreateEventResponse>> CreateEvent([FromBody] CreateEventRequest createEventRequest,
         CancellationToken cancellationToken)
     {
@@ -60,6 +63,7 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost("{eventId}/images")]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<ActionResult<IEnumerable<ImageResponse>>> AddImagesToEventAsync(
         [FromForm] IFormFileCollection imageFiles,
         string eventId, CancellationToken cancellationToken)
@@ -69,6 +73,7 @@ public class EventsController : ControllerBase
     }
 
     [HttpDelete("images")]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<IActionResult> RemoveImagesAsync([FromBody] IEnumerable<string> imageIds,
         CancellationToken cancellationToken)
     {
@@ -77,6 +82,7 @@ public class EventsController : ControllerBase
     }
 
     [HttpPost("{eventId}/users")]
+    [Authorize(Policy = Policies.User)]
     public async Task<IActionResult> RegisterUserToEvent(string eventId, CancellationToken cancellationToken)
     {
         var userId = User.Identity?.GetUserId();
@@ -91,6 +97,7 @@ public class EventsController : ControllerBase
     }
 
     [HttpDelete("{eventId}/users")]
+    [Authorize(Policy = Policies.User)]
     public async Task<IActionResult> UnregisterUserFromEvent(string eventId, CancellationToken cancellationToken)
     {
         var userId = User.Identity?.GetUserId();
