@@ -20,9 +20,9 @@ Docker installed on your machine. If not, please refer to the [official Docker i
 
 ### Web API Functionalities
 
-For detailed API documentation open [this file](https://github.com/Krist1e/events-management-app/blob/master/EventsManagementApp.postman_collection.json).
+Detailed API documentation: http://localhost:8080/swagger
 
-Or refer to Swagger documentation: http://localhost:8080/swagger
+For Postman API requests collection open [this file](https://github.com/Krist1e/events-management-app/blob/master/EventsManagementApp.postman_collection.json).
 
 #### Event Management
 
